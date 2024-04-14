@@ -1,0 +1,135 @@
+Html and CSS
+
+1) Building all the UI
+
+Javascript 
+
+1) Html audio/video methods article w3 schools.
+2) triggering play() and pause() on the audio element
+3) We have to target the audio element and the buttons(previous, play, next) because that is what will
+allow us to control.
+4) Make a const for audio element in the js file.
+5) Make const for buttons -> previous, play, next etc
+6) Make functions for play and pause
+
+   music.play(); -> targeting the music audio element
+
+   let isPlaying = false; -> this will be true if the song is playing and false if the song is paused
+
+7) to toggles between play and pause -> as in if the music is playing we should be able to pause it
+  and if it is paused that we should be able to play it
+   playBtn.addEventListener('click', () => (isPlaying ? pauseSong() : playSong()));
+
+8) Next is -> The play button should turn into a pause button if the music is playing and vice versa
+   to do this -> we do  playBtn.classList.replace('fa-play', 'fa-pause'); in the functions plysong
+   and set the title to play pause -> playBtn.setAttribute('title', 'Pause');
+
+9) Now we will see the previous and next functionality
+   When the previous btn is pressed we have to switch -> img, audio, music, name of artist, 
+
+   const for img, name of artist and name of song in js
+
+   i)now to replace the song with another when pressed on the previous btn 
+   we have to have an array of songs. which can also have the name of the artist, music, etc.
+
+   ii)Now we create a functions that ads the array elements to the dom element.
+   function loadSong(song) {
+  title.textContent = song.displayName;
+  artist.textContent = song.artist;
+  music.src = `music/${song.name}.mp3`;
+  image.src = `img/${song.name}.jpg`;
+}
+
+// On Load - Select First Song
+loadSong(songs[songIndex]);
+
+10) Now we move on to actually control - which song is loaded  with our previous and next buttons
+
+prevBtn.addEventListener('click', prevSong);
+nextBtn.addEventListener('click', nextSong);
+
+11) Creating prevSong and nextSong functions
+ The songIndex that you pass has to be dynamic
+ let songIndex = 0;
+
+ Everytime we run our next or previous function -> we want to able to change the value of our index.
+                                   Then we want to load that song and play that song
+
+ERROR - when the song index value is -1, the 0 index song is palyed but there is an uncaught ERROR
+        same goes to the song after the 3rd one the 4th index song throws and ERROR
+
+        1)we can't allow the songs index to be higher than the amount of songs we have.
+        2)we also can't allow the songs index to be -ve 
+
+        if (songIndex < 0) {  similar kind of logic for > than something.
+    songIndex = songs.length - 1;
+  }
+
+
+12) Next step is : We want to be able to update the progress bar with the actual % of song that is 
+complete.
+And we're also going to the current time and duration as we load.
+
+-> remove the hardcoded 66% in the css to 0%
+
+-> change in Javascript.
+
+-> Use audio/video events. -> use the timeUpdate events
+
+->Create a constant for our progress container. and progress
+
+->make an addEventListener for music/audio element. -> use timeUpdate addEventListener
+
+-> create a function updateprogressbar. -> we have to only update the progress bar if something is playing
+
+->function updateProgressBar(e) {
+  if (isPlaying) { console.log(e) -> from all these e's we need  only some propertities 
+  currenttime and duration}
+To pull these values out, we can do that using destructuring -> 
+
+eg:
+const user = {id : 23, is_verified: true};
+const{id is_verified} = user
+
+const { duration, currentTime } = e.srcElement;  -> and console log these to see if your getting the values
+
+
+13) math to make the progressbar work
+
+  We changed it to % by doing some math, now we need to change these numbers to strings.
+    progress.style.width = `${progressPercent}%`; -> is actually moving the progress bar.
+
+14)Updating our duration and current time
+   create constant for the 2 elements (current time and duration)
+
+    // Calculate display for duration
+    const durationMinutes = Math.floor(duration / 60);
+    let durationSeconds = Math.floor(duration % 60);
+
+    Similar thing has to be done for current time.
+
+15) The last thing is -> To allow us to click anywhere on the progressbar and get to that part of the song
+
+progressContainer.addEventListener('click', setProgressBar);
+
+setProgressBar(e ) console log(e)
+ 
+We have to find the width of the progressbar, because we need the total width/what postition we are actual
+we have a clientWidth value -> which we have to pull out
+We can use the Javascript this keyword
+
+ const width = this.clientWidth;
+
+We want to be able to get where we clicked on the progressbar -> this will be the offset x value
+We need the duration to get the % of where we clicked on the progressbar
+
+We use currentTime attribute 
+
+This is happening -> because our update progressbar function is thrown whenever our time update events
+is fired and that is happening because we adre changing the current time attribute.
+
+16) To make the next audio play after  the first audio ends
+we are looking for the ended event.
+addEventListener to music -> hits the ended event we are firing the nextsong function
+
+
